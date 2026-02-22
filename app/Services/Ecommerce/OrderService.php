@@ -3,6 +3,7 @@
 namespace App\Services\Ecommerce;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -168,6 +169,7 @@ class OrderService
         $subtotal = 0;
 
         foreach ($items as $index => $item) {
+            $sku = isset($item['product_sku']) ? trim((string) $item['product_sku']) : null;
             $name = trim((string) ($item['product_name'] ?? ''));
             $quantity = (int) ($item['quantity'] ?? 0);
             $unitPrice = (int) ($item['unit_price_cents'] ?? 0);
@@ -184,11 +186,20 @@ class OrderService
                 throw new InvalidArgumentException("Item [{$name}] unit_price_cents must be a positive integer.");
             }
 
+            // Vérification serveur : si un SKU est fourni et correspond à un produit,
+            // on ignore le prix client et on utilise le prix réel de la base de données.
+            if ($sku !== null && $sku !== '') {
+                $product = Product::query()->where('sku', $sku)->first();
+                if ($product !== null) {
+                    $unitPrice = $product->price_cents;
+                }
+            }
+
             $totalPrice = $quantity * $unitPrice;
             $subtotal += $totalPrice;
 
             $normalized[] = [
-                'product_sku' => isset($item['product_sku']) ? trim((string) $item['product_sku']) : null,
+                'product_sku' => $sku,
                 'product_name' => $name,
                 'quantity' => $quantity,
                 'unit_price_cents' => $unitPrice,

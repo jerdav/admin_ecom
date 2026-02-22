@@ -15,22 +15,43 @@
     <aside class="sidebar">
         <div>
             <h1 class="brand">EcomAdmin</h1>
-            <p class="brand-sub">Back-office generique</p>
+            <p class="brand-sub">Back-office générique</p>
         </div>
 
         <nav class="menu">
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Tableau de bord</a>
-            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">Commandes</a>
-            <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">Categories</a>
-            <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'active' : '' }}">Produits</a>
-            <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings') ? 'active' : '' }}">Parametres</a>
-            <a href="{{ route('admin.audit') }}" class="{{ request()->routeIs('admin.audit') ? 'active' : '' }}">Audit</a>
+            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:squares-2x2-solid" class="nav-icon"></iconify-icon>
+                Tableau de bord
+            </a>
+            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:shopping-bag-solid" class="nav-icon"></iconify-icon>
+                Commandes
+            </a>
+            <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:folder-solid" class="nav-icon"></iconify-icon>
+                Catégories
+            </a>
+            <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:cube-solid" class="nav-icon"></iconify-icon>
+                Produits
+            </a>
+            <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:cog-6-tooth-solid" class="nav-icon"></iconify-icon>
+                Paramètres
+            </a>
+            <a href="{{ route('admin.audit') }}" class="{{ request()->routeIs('admin.audit') ? 'active' : '' }}">
+                <iconify-icon icon="heroicons:clipboard-document-list-solid" class="nav-icon"></iconify-icon>
+                Audit
+            </a>
         </nav>
 
         <div class="side-bottom">
             <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="logout">Deconnexion</button>
+                <button type="submit" class="logout">
+                    <iconify-icon icon="heroicons:arrow-left-on-rectangle-solid"></iconify-icon>
+                    Déconnexion
+                </button>
             </form>
         </div>
     </aside>
@@ -44,16 +65,23 @@
         </header>
 
         @if (session('success'))
-            <div class="alert-success">{{ session('success') }}</div>
+            <div class="alert-success">
+                <iconify-icon icon="heroicons:check-circle-solid"></iconify-icon>
+                {{ session('success') }}
+            </div>
         @endif
 
         @if ($errors->any())
-            <div class="alert-error">{{ $errors->first() }}</div>
+            <div class="alert-error">
+                <iconify-icon icon="heroicons:exclamation-circle-solid"></iconify-icon>
+                {{ $errors->first() }}
+            </div>
         @endif
 
         @yield('content')
     </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
 <script src="{{ asset('js/admin.js') }}" defer></script>
 @stack('scripts')
 </body>

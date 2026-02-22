@@ -25,8 +25,8 @@ class AuthController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'string', 'email:rfc'],
+            'password' => ['required', 'string', 'min:8'],
         ]);
 
         $remember = (bool) $request->boolean('remember');
