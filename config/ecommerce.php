@@ -24,7 +24,5 @@ return [
     'feature_flags' => [
         'payment.stripe' => false,
         'payment.paypal' => false,
-        'shipping.flat_rate' => true,
-        'mail.order_notifications' => true,
     ],
 ];

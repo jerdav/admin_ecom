@@ -64,6 +64,16 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function checkoutAttempts(): HasMany
+    {
+        return $this->hasMany(CheckoutAttempt::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;

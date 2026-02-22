@@ -31,11 +31,26 @@ class OrderService
         $discount = $this->intValue($context['discount_cents'] ?? 0);
         $total = max(0, $subtotal + $shipping + $tax - $discount);
 
-        return DB::transaction(function () use ($user, $context, $normalizedItems, $subtotal, $shipping, $tax, $discount, $total) {
+        $initialStatus = (string) ($context['initial_status'] ?? Order::STATUS_PENDING);
+        $statusReason = (string) ($context['status_reason'] ?? 'order_created');
+
+        if (! in_array($initialStatus, [
+            Order::STATUS_PENDING,
+            Order::STATUS_PAID,
+            Order::STATUS_CANCELLED,
+            Order::STATUS_REFUNDED,
+            Order::STATUS_SHIPPED,
+            Order::STATUS_DELIVERED,
+            Order::STATUS_RETURNED,
+        ], true)) {
+            throw new InvalidArgumentException('Invalid initial order status.');
+        }
+
+        return DB::transaction(function () use ($user, $context, $normalizedItems, $subtotal, $shipping, $tax, $discount, $total, $initialStatus, $statusReason) {
             $order = Order::query()->create([
                 'order_number' => $this->generateOrderNumber(),
                 'user_id' => $user->id,
-                'status' => Order::STATUS_PENDING,
+                'status' => $initialStatus,
                 'currency' => strtoupper((string) ($context['currency'] ?? config('ecommerce.currency', 'EUR'))),
                 'subtotal_cents' => $subtotal,
                 'shipping_cents' => $shipping,
@@ -52,9 +67,9 @@ class OrderService
 
             $order->statusHistory()->create([
                 'from_status' => null,
-                'to_status' => Order::STATUS_PENDING,
+                'to_status' => $initialStatus,
                 'changed_by' => null,
-                'reason' => 'order_created',
+                'reason' => $statusReason,
                 'meta' => null,
             ]);
 

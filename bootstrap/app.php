@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\ShopInitCommand;
+use App\Http\Middleware\EnsureAdminWeb;
 use App\Http\Middleware\EnsureUserRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => EnsureUserRole::class,
+            'admin.web' => EnsureAdminWeb::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
